@@ -127,21 +127,43 @@
       </div>
       <div class="index-context-swiper">
         <swiper
-          style="height:200px; margin:0 -10px;"
-          autoplay
+          style="height:260px; margin:0 -10px;"
           circular
           interval="3000"
           previous-margin="10px"
           next-margin="10px"
         >
-          <swiper-item class="index-context-swiper-two" v-for="(item, index_) in swipersTwo" :key="item.id" :value="index_">
-            <div>
-              <img :src="item.imgUrl" alt />
-            </div>
-            <div class="storeinfo">
-              <img :src="item.storeImg" alt />
-              <label for="storeName">{{item.storeName}}</label>
-              <label for="discount" class="storeinfo-label-discount" v-for="discount in item.discounts" :key="discount">{{discount}}</label>
+          <swiper-item
+            class="index-context-swiper-two"
+            v-for="(item, index_) in swipersTwo"
+            :key="item.id"
+            :value="index_"
+          >
+            <div class="index-context-swiper-big">
+              <div>
+                <img :src="item.imgUrl" alt />
+              </div>
+              <div class="storeinfo">
+                <wux-row>
+                  <wux-col span="2">
+                    <img class="storeinfo-img img" :src="item.storeImg" alt />
+                  </wux-col>
+                  <wux-col span="10">
+                    <div class="storeinfo-label">
+                      <p for="storeName">{{item.storeName}}</p>
+                      <label
+                        for="discount"
+                        class="storeinfo-label-discount"
+                        v-for="discount in item.discounts"
+                        :key="discount"
+                      >{{discount}}</label>
+                    </div>
+                  </wux-col>
+                </wux-row>
+              </div>
+              <div class="storeinfo-com">
+                <p>{{item.slogan}}</p>
+              </div>
             </div>
           </swiper-item>
         </swiper>
@@ -340,7 +362,8 @@ export default {
           storeName: "大嘴怪手工水饺（凉皮）",
           imgUrl: "/static/images/swiper-1.png",
           storeImg: "/static/images/swiperTwo-1.png",
-          discounts: ["9减8","22减16","5元优惠券","10元优惠券"]
+          slogan: "用心做馅，让爱传承",
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
         },
         {
           id: 2,
@@ -348,7 +371,8 @@ export default {
           storeName: "煲来乐煲仔饭",
           imgUrl: "/static/images/swiper-2.png",
           storeImg: "/static/images/swiperTwo-2.png",
-          discounts: ["9减8","22减16","5元优惠券","10元优惠券"]
+          slogan: "最牛煲仔饭",
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
         },
         {
           id: 3,
@@ -356,7 +380,8 @@ export default {
           storeName: "叫了个炸鸡（新安店）",
           imgUrl: "/static/images/swiper-3.png",
           storeImg: "/static/images/swiperTwo-3.png",
-          discounts: ["9减8","22减16","5元优惠券","10元优惠券"]
+          slogan: "美味佳肴",
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
         },
         {
           id: 4,
@@ -364,7 +389,8 @@ export default {
           storeName: "果然不错鲜果旗舰店",
           imgUrl: "/static/images/swiper-4.png",
           storeImg: "/static/images/swiperTwo-4.png",
-          discounts: ["9减8","22减16","5元优惠券","10元优惠券"]
+          slogan: "新鲜果切来一份",
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
         }
       ]
     };
@@ -520,20 +546,45 @@ export default {
   padding: 0 5px;
 }
 .storeinfo {
+  height: 41px;
   position: relative;
-  top: -35px;
+  top: -50px;
   left: 10px;
 }
-.storeinfo>img {
-  width: 41px;
-  height: 41px;
+.storeinfo-label {
+  display: inline-block;
+  width: 250px;
+  height: 100%;
 }
-.storeinfo>label {
+.storeinfo-img.img {
+  width: 50px;
+  height: 50px;
+}
+.storeinfo-label > p {
   color: #fff;
 }
-.storeinfo>label.storeinfo-label-discount {
+.storeinfo-label > label.storeinfo-label-discount {
   background-color: red;
   display: inline-block;
-  height: 15px;
+  color: #fff;
+  height: 14px;
+  font-size: 10px;
+  border-radius: 3px;
+  margin: 3px 10px 0 0;
+  padding: 1px 3px;
+}
+.storeinfo-com {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  top: -40px;
+}
+.storeinfo-com > p {
+  margin: 15px 0 5px 10px;
+  font-weight: bold;
+}
+.index-context-swiper-big {
+  box-shadow: 0 3px 5px -4px;
+  border-radius: 5px;
 }
 </style>
