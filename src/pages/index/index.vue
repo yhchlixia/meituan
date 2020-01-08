@@ -129,9 +129,12 @@
         <swiper
           style="height:260px; margin:0 -10px;"
           circular
+          autoplay
           interval="3000"
           previous-margin="10px"
           next-margin="10px"
+          :current="currentCard"
+          @change="changeCurrentCard"
         >
           <swiper-item
             class="index-context-swiper-two"
@@ -163,10 +166,77 @@
               </div>
               <div class="storeinfo-com">
                 <p>{{item.slogan}}</p>
+                <div class="storeinfo-com-img">
+                  <wux-row gutter="5">
+                    <wux-col span="4" v-for="com in item.coms" :key="com.coms_id">
+                      <div class="storeinfo-com-img-col">
+                        <img class="storeinfo-com-img-image image" :src="com.imgurl" alt />
+                        <p>{{com.label}}</p>
+                        <span class="storeinfo-com-img-newPrice color-span">￥{{com.newPrice}}</span>
+                        <span
+                          class="storeinfo-com-img-oldPrice color-span"
+                          v-if="com.oldPrice"
+                        >￥{{com.oldPrice}}</span>
+                      </div>
+                    </wux-col>
+                  </wux-row>
+                </div>
               </div>
             </div>
           </swiper-item>
         </swiper>
+        <div class="menu-indicator-dots">
+          <div
+            v-for="item in 4"
+            :key="item"
+            class="menu-indicator-dots-custom"
+            :class="{'yhch': item  === currentCard}"
+          ></div>
+        </div>
+      </div>
+      <div class="index-context-good">
+        <div class="index-context-good-label">
+          <wux-row>
+            <wux-col span="10">
+              <label for style="font-size:18px;margin-right:10px;">神价格</label>
+              <label for style="font-size:10px;color:#777;">这么买更实惠</label>
+            </wux-col>
+            <wux-col class="index-context-good-label-extra" span="2">更多 ></wux-col>
+          </wux-row>
+        </div>
+        <div class="index-context-good-scroll">
+          <scroll-view scroll-x="true" style="width: 100%;height:180px;white-space: nowrap;">
+            <view
+              class="index-context-good-scroll-view scroll-view-width"
+              v-for="item in goodScrollGod"
+              :key="item.id"
+            >
+              <img :src="item.src" style="width:134px;height:110px;border-radius:5px;" />
+              <div class="index-context-good-scroll-label">
+                <p>{{item.label}}</p>
+                <span class="storeinfo-com-img-newPrice color-span">￥{{item.newPrice}}</span>
+                <span
+                  class="storeinfo-com-img-oldPrice color-span"
+                  v-if="item.oldPrice"
+                >￥{{item.oldPrice}}</span>
+              </div>
+            </view>
+            <div class="moreButton moreButton-god">
+              <label>
+                <wux-icon type="md-log-in" size="16"></wux-icon>
+                <br />查
+                <br />看
+                <br />更
+                <br />多
+              </label>
+            </div>
+          </scroll-view>
+        </div>
+      </div>
+      <div class="index-context-list">
+        <div class="index-context-list-label">商家附近</div>
+        <div class="index-context-list-filterbar">
+        </div>
       </div>
     </div>
   </div>
@@ -178,9 +248,245 @@ import card from "@/components/card";
 export default {
   data() {
     return {
+      opened: false,
+      items: [
+        {
+          type: "radio",
+          label: "Updated",
+          value: "updated",
+          checked: true,
+          children: [
+            {
+              label: "Recently updated",
+              value: "desc",
+              checked: true // 默认选中
+            },
+            {
+              label: "Least recently updated",
+              value: "asc"
+            }
+          ],
+          groups: ["001"]
+        },
+        {
+          type: "text",
+          label: "Forks",
+          value: "forks",
+          groups: ["002"]
+        },
+        {
+          type: "sort",
+          label: "Stars",
+          value: "stars",
+          groups: ["003"]
+        },
+        {
+          type: "filter",
+          label: "筛选",
+          value: "filter",
+          checked: true,
+          children: [
+            {
+              type: "radio",
+              label: "Languages（单选）",
+              value: "language",
+              children: [
+                {
+                  label: "JavaScript",
+                  value: "javascript"
+                },
+                {
+                  label: "HTML",
+                  value: "html"
+                },
+                {
+                  label: "CSS",
+                  value: "css"
+                },
+                {
+                  label: "TypeScript",
+                  value: "typescript"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "Query（复选）",
+              value: "query",
+              children: [
+                {
+                  label: "Angular",
+                  value: "angular"
+                },
+                {
+                  label: "Vue",
+                  value: "vue"
+                },
+                {
+                  label: "React",
+                  value: "react",
+                  checked: true // 默认选中
+                },
+                {
+                  label: "Avalon",
+                  value: "avalon"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "配送方式",
+              value: "away",
+              children: [
+                {
+                  label: "京东配送",
+                  value: "1"
+                },
+                {
+                  label: "货到付款",
+                  value: "2"
+                },
+                {
+                  label: "仅看有货",
+                  value: "3"
+                },
+                {
+                  label: "促销",
+                  value: "4"
+                },
+                {
+                  label: "全球购",
+                  value: "5"
+                },
+                {
+                  label: "PLUS专享价",
+                  value: "6"
+                },
+                {
+                  label: "新品",
+                  value: "7"
+                },
+                {
+                  label: "配送全球",
+                  value: "8"
+                }
+              ]
+            },
+            {
+              type: "radio",
+              label: "性别",
+              value: "gander",
+              children: [
+                {
+                  label: "男",
+                  value: "0"
+                },
+                {
+                  label: "女",
+                  value: "1"
+                },
+                {
+                  label: "通用",
+                  value: "2"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "闭合方式",
+              value: "closed_mode",
+              children: [
+                {
+                  label: "卡扣",
+                  value: "0"
+                },
+                {
+                  label: "拉链",
+                  value: "1"
+                },
+                {
+                  label: "其他",
+                  value: "2"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "轮子种类",
+              value: "wheel_type",
+              children: [
+                {
+                  label: "万向轮",
+                  value: "0"
+                },
+                {
+                  label: "单向轮",
+                  value: "1"
+                },
+                {
+                  label: "飞机轮",
+                  value: "2"
+                },
+                {
+                  label: "其他",
+                  value: "3"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "箱包硬度",
+              value: "wheel_type",
+              children: [
+                {
+                  label: "硬箱",
+                  value: "0"
+                },
+                {
+                  label: "软硬结合",
+                  value: "1"
+                },
+                {
+                  label: "软箱",
+                  value: "2"
+                },
+                {
+                  label: "其他",
+                  value: "3"
+                }
+              ]
+            },
+            {
+              type: "checkbox",
+              label: "适用场景",
+              value: "wheel_type",
+              children: [
+                {
+                  label: "旅行",
+                  value: "0"
+                },
+                {
+                  label: "婚庆",
+                  value: "1"
+                },
+                {
+                  label: "出差",
+                  value: "2"
+                },
+                {
+                  label: "其他",
+                  value: "3"
+                }
+              ]
+            }
+          ],
+          groups: ["001", "002", "003"]
+        }
+      ],
       bordered: false,
       indicatorDots: true,
       current: 0,
+      currentCard: 0,
       motto: "Hello miniprograme",
       userInfo: {
         nickName: "mpvue",
@@ -333,6 +639,56 @@ export default {
           src: "/static/images/threemir.jpg"
         }
       ],
+      goodScrollGod: [
+        {
+          id: 1,
+          label: "花少爷凉皮",
+          src: "/static/images/youpomian.jpg",
+          newPrice: "11.9",
+          oldPrice: "32.9",
+          spread: "21"
+        },
+        {
+          id: 2,
+          label: "韩国炸鸡",
+          src: "/static/images/zhaji.jpg",
+          newPrice: "22.8",
+          oldPrice: "32.9",
+          spread: "10.1"
+        },
+        {
+          id: 3,
+          label: "正宗陕西汉中热米皮",
+          src: "/static/images/mipi.jpg",
+          newPrice: "11.9",
+          oldPrice: "32.9",
+          spread: "21"
+        },
+        {
+          id: 4,
+          label: "叫了只炸鸡（华庄店）",
+          src: "/static/images/jiaolezhizhaji.jpg",
+          newPrice: "17.88",
+          oldPrice: "34.99",
+          spread: "17.11"
+        },
+        {
+          id: 5,
+          label: "咕咕鸡脆皮鸡排&烤冷面&米皮夹饼",
+          src: "/static/images/cuipiji.jpg",
+          newPrice: "16.99",
+          oldPrice: "36.99",
+          spread: "20"
+        },
+        {
+          id: 6,
+          label: "三个先生的韩国炸鸡（无锡店）",
+          src: "/static/images/threemir.jpg",
+          newPrice: "25.88",
+          oldPrice: "51.8",
+          spread: "25.92"
+        }
+      ],
       swipers: [
         {
           id: 1,
@@ -363,7 +719,29 @@ export default {
           imgUrl: "/static/images/swiper-1.png",
           storeImg: "/static/images/swiperTwo-1.png",
           slogan: "用心做馅，让爱传承",
-          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"],
+          coms: [
+            {
+              coms_id: 1,
+              imgurl: "/static/images/swiperTwo-1-com-1.png",
+              label: "纯手工荠菜猪肉馅饺子",
+              newPrice: "13.88",
+              oldPrice: "21.88"
+            },
+            {
+              coms_id: 2,
+              imgurl: "/static/images/swiperTwo-1-com-2.png",
+              label: "纯手工芹菜猪肉水饺",
+              newPrice: "21.88"
+            },
+            {
+              coms_id: 3,
+              imgurl: "/static/images/swiperTwo-1-com-3.png",
+              label: "韭菜鸡蛋水饺（15只）",
+              newPrice: "13.5",
+              oldPrice: "22.23"
+            }
+          ]
         },
         {
           id: 2,
@@ -372,7 +750,30 @@ export default {
           imgUrl: "/static/images/swiper-2.png",
           storeImg: "/static/images/swiperTwo-2.png",
           slogan: "最牛煲仔饭",
-          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"],
+          coms: [
+            {
+              coms_id: 1,
+              imgurl: "/static/images/swiperTwo-2-com-1.png",
+              label: "【特价】青皮甘蔗脆香甜",
+              newPrice: "0.99",
+              oldPrice: "7.9"
+            },
+            {
+              coms_id: 2,
+              imgurl: "/static/images/swiperTwo-2-com-2.png",
+              label: "【整果】超甜红颜草莓",
+              newPrice: "25.9",
+              oldPrice: "29.9"
+            },
+            {
+              coms_id: 3,
+              imgurl: "/static/images/swiperTwo-2-com-3.png",
+              label: "【整果】超甜沙糖桔",
+              newPrice: "7.9",
+              oldPrice: "11.8"
+            }
+          ]
         },
         {
           id: 3,
@@ -381,7 +782,30 @@ export default {
           imgUrl: "/static/images/swiper-3.png",
           storeImg: "/static/images/swiperTwo-3.png",
           slogan: "美味佳肴",
-          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"],
+          coms: [
+            {
+              coms_id: 1,
+              imgurl: "/static/images/swiperTwo-3-com-1.png",
+              label: "叫了个童子鸡（口水鸡）",
+              newPrice: "19.8",
+              oldPrice: "29.8"
+            },
+            {
+              coms_id: 2,
+              imgurl: "/static/images/swiperTwo-3-com-2.png",
+              label: "叫了个童子鸡/大号",
+              newPrice: "21.8",
+              oldPrice: "39.8"
+            },
+            {
+              coms_id: 3,
+              imgurl: "/static/images/swiperTwo-3-com-3.png",
+              label: "奥尔良烤鸡",
+              newPrice: "19.8",
+              oldPrice: "33.8"
+            }
+          ]
         },
         {
           id: 4,
@@ -390,7 +814,28 @@ export default {
           imgUrl: "/static/images/swiper-4.png",
           storeImg: "/static/images/swiperTwo-4.png",
           slogan: "新鲜果切来一份",
-          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"]
+          discounts: ["9减8", "22减16", "5元优惠券", "10元优惠券"],
+          coms: [
+            {
+              coms_id: 1,
+              imgurl: "/static/images/swiperTwo-4-com-1.png",
+              label: "香菇滑鸡煲仔饭",
+              newPrice: "18.8"
+            },
+            {
+              coms_id: 2,
+              imgurl: "/static/images/swiperTwo-4-com-2.png",
+              label: "酱香茄子煲仔饭",
+              newPrice: "17.8"
+            },
+            {
+              coms_id: 3,
+              imgurl: "/static/images/swiperTwo-4-com-3.png",
+              label: "排骨腊味双拼煲仔饭",
+              newPrice: "20.8",
+              oldPrice: "24.8"
+            }
+          ]
         }
       ]
     };
@@ -401,8 +846,14 @@ export default {
   },
 
   methods: {
+    onOpen() {
+      this.opened = true;
+    },
     changeCurrent(e) {
       this.current = e.mp.detail.current;
+    },
+    changeCurrentCard(e) {
+      this.currentCard = e.mp.detail.current;
     },
     bindViewTap() {
       const url = "../logs/main";
@@ -474,7 +925,7 @@ export default {
   line-height: 24px;
 }
 .index-context-good-scroll-view {
-  height: 130px;
+  height: calc(100% - 20px);
   width: 120px;
   display: inline-block;
   margin: 10px 10px 10px 0;
@@ -586,5 +1037,49 @@ export default {
 .index-context-swiper-big {
   box-shadow: 0 3px 5px -4px;
   border-radius: 5px;
+}
+.storeinfo-com-img {
+  height: 125px;
+  width: calc(100% - 20px);
+  margin: 0 10px;
+  border-radius: 5px;
+}
+.storeinfo-com-img-image.image {
+  height: 80px;
+}
+.storeinfo-com-img-col > p {
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.storeinfo-com-img-newPrice.color-span {
+  font-size: 12px;
+  margin-right: 2px;
+  color: red;
+}
+.storeinfo-com-img-oldPrice.color-span {
+  font-size: 10px;
+  color: #777;
+  text-decoration: line-through;
+}
+.moreButton.moreButton-god {
+  height: 160px;
+  border: none;
+  padding: 35px 0;
+}
+.scroll-view-width {
+  width: 140px;
+  box-shadow: 0 4px 10px -4px;
+}
+.scroll-view-width > .index-context-good-scroll-label {
+  padding: 0 0 0 10px;
+}
+.index-context-list {
+  width: 100%;
+  margin: 30px 0 10px 0;
+}
+.index-context-list-label {
+  font-weight: bold;
 }
 </style>
