@@ -36,14 +36,16 @@
       <span>{{user.address}}</span>
       <wux-icon type="md-arrow-dropright" color="#ccc" size="15" class="to-choose-address"></wux-icon>
     </div>
-    <wux-search-bar
-      @click="toSearch"
-      clear
-      :placeholder="placeholder"
-      placeholder-class="user-search"
-      :showCancel="showCancel"
-      disabled
-    ></wux-search-bar>
+    <div class="search-sticky">
+      <wux-search-bar
+        @click="toSearch"
+        clear
+        :placeholder="placeholder"
+        placeholder-class="user-search"
+        :showCancel="showCancel"
+        disabled
+      ></wux-search-bar>
+    </div>
     <div class="index-menu">
       <swiper :current="current" @change="changeCurrent">
         <block>
@@ -236,6 +238,7 @@
       <div class="index-context-list">
         <div class="index-context-list-label">商家附近</div>
         <div class="index-context-list-filterbar">
+          <div class="index-context-list-filterbar-menu"></div>
         </div>
       </div>
     </div>
@@ -912,6 +915,12 @@ export default {
   text-align: center;
   position: relative;
   top: -20px;
+}
+.search-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: #fff;
 }
 .index-context-good {
   margin-top: 10px;
