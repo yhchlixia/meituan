@@ -36,7 +36,7 @@
       <span>{{user.address}}</span>
       <wux-icon type="md-arrow-dropright" color="#ccc" size="15" class="to-choose-address"></wux-icon>
     </div>
-    <div class="search-sticky">
+    <div class="index-search sticky">
       <wux-search-bar
         @click="toSearch"
         clear
@@ -235,10 +235,68 @@
           </scroll-view>
         </div>
       </div>
+    </div>
+    <div class="filterbar">
+      <wux-backdrop id="wux-backdrop" z-index="12" @click="toReleaseModel" />
       <div class="index-context-list">
         <div class="index-context-list-label">商家附近</div>
         <div class="index-context-list-filterbar">
-          <div class="index-context-list-filterbar-menu"></div>
+          <div class="index-context-list-filterbar-menu sticky">
+            <div>
+              <wux-row>
+                <wux-col span="3" @click="toChooseList('sort')">
+                  <div>
+                    <span @click="retain">{{SortFlag}}</span>
+                    <wux-icon type="md-arrow-dropdown" size="16px"></wux-icon>
+                  </div>
+                </wux-col>
+                <wux-col span="2" @click="toChooseList('saleHot')">
+                  <div>
+                    <span>销量高</span>
+                  </div>
+                </wux-col>
+                <wux-col span="2" @click="toChooseList('speed')">
+                  <div>
+                    <span>速度快</span>
+                  </div>
+                </wux-col>
+                <wux-col span="2" @click="toChooseList('alliance')">
+                  <div>
+                    <span>津贴联盟</span>
+                  </div>
+                </wux-col>
+                <wux-col span="3" @click="toChooseList('choose')">
+                  <div style="text-align:right">
+                    <span>筛选</span>
+                    <wux-icon type="md-wine" size="14px"></wux-icon>
+                  </div>
+                </wux-col>
+              </wux-row>
+            </div>
+            <div class="sort-list" v-if="sortList">
+              <ul>
+                <li
+                  class="sort-list-li"
+                  v-for="Sort in sortListArray"
+                  :key="Sort.id"
+                  @click="toChooseSort(Sort)"
+                  :class="{'orange' : SortFlag === Sort.label}"
+                >{{Sort.label}}</li>
+              </ul>
+            </div>
+            <div class="sort-list" v-if="choose">
+              <ul>
+                <li
+                  class="sort-list-li"
+                  v-for="Sort in sortListArray"
+                  :key="Sort.id"
+                  @click="toChooseSort(Sort)"
+                  :class="{'orange' : SortFlag === Sort.label}"
+                >{{Sort.label}}</li>
+              </ul>
+            </div>
+          </div>
+          <div style="height:1200px;width:100%;"></div>
         </div>
       </div>
     </div>
@@ -247,6 +305,7 @@
 
 <script>
 import card from "@/components/card";
+import { $wuxBackdrop } from "../../../static/lib/index";
 
 export default {
   data() {
@@ -484,6 +543,37 @@ export default {
             }
           ],
           groups: ["001", "002", "003"]
+        }
+      ],
+      SortFlag: "综合排序",
+      sortListArray: [
+        {
+          id: 1,
+          label: "综合排序"
+        },
+        {
+          id: 2,
+          label: "距离最近"
+        },
+        {
+          id: 3,
+          label: "评分最高"
+        },
+        {
+          id: 4,
+          label: "起送价最低"
+        },
+        {
+          id: 5,
+          label: "配送费最低"
+        },
+        {
+          id: 6,
+          label: "人均高到低"
+        },
+        {
+          id: 7,
+          label: "人均低到高"
         }
       ],
       bordered: false,
@@ -840,15 +930,51 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      sortList: false,
+      choose: false
     };
   },
 
   components: {
     card
   },
+  onLoad() {
+    this.$wuxBackdrop = $wuxBackdrop();
+  },
 
   methods: {
+    toChooseSort(item) {
+      this.SortFlag = item.label;
+      this.toReleaseModel();
+    },
+    toReleaseModel() {
+      this.$wuxBackdrop.release();
+      this.choose = false;
+      this.sortList = false;
+    },
+    toChooseList(item) {
+      wx.pageScrollTo({
+        scrollTop: 995,
+        duration: 10
+      });
+      console.log(item);
+      this.$wuxBackdrop.release();
+      if (item === "sort") {
+        this.sortList
+          ? this.$wuxBackdrop.release()
+          : this.$wuxBackdrop.retain();
+        this.choose = false;
+        this.sortList = !this.sortList;
+      } else if (item === "choose") {
+        this.choose ? this.$wuxBackdrop.release() : this.$wuxBackdrop.retain();
+        this.sortList = false;
+        this.choose = !this.choose;
+      } else {
+        this.sortList = false;
+        this.choose = false;
+      }
+    },
     onOpen() {
       this.opened = true;
     },
@@ -871,6 +997,7 @@ export default {
       // throw {message: 'custom test'}
     },
     toSearch() {
+      this.toReleaseModel();
       wx.navigateTo({
         url: "/pages/search/main",
         success(res) {
@@ -916,11 +1043,15 @@ export default {
   position: relative;
   top: -20px;
 }
-.search-sticky {
+.sticky {
   position: sticky;
-  top: 0;
   z-index: 999;
   background-color: #fff;
+  margin: 0 -10px;
+  padding: 0 10px;
+}
+.index-search {
+  top: 0;
 }
 .index-context-good {
   margin-top: 10px;
@@ -1090,5 +1221,29 @@ export default {
 }
 .index-context-list-label {
   font-weight: bold;
+  margin-bottom: 15px;
+}
+.index-context-list-filterbar-menu {
+  top: 47px;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+  padding: 5px 10px;
+}
+.sort-list {
+  position: relative;
+  top: 5px;
+  margin: 0 -10px;
+}
+.sort-list-li {
+  background-color: #fff;
+  font-size: 14px;
+  color: #000;
+  line-height: 30px;
+  border-bottom: 0.5px solid #ccc;
+  padding: 10px;
+}
+.orange {
+  color: orange;
 }
 </style>

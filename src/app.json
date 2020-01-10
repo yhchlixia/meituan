@@ -51,6 +51,9 @@
     "wux-card": "./static/lib/card/index",
     "wux-wing-blank": "./static/lib/wing-blank/index",
     "wux-image": "./static/lib/image/index",
-    "wux-filterbar": "./static/lib/filterbar/index"
+    "wux-filterbar": "./static/lib/filterbar/index",
+    "wux-backdrop": "./static/lib/backdrop/index",
+    "wux-cell-group": "./static/lib/cell-group/index",
+    "wux-cell": "./static/lib/cell/index"
   }
 }
