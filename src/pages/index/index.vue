@@ -273,7 +273,7 @@
                 </wux-col>
               </wux-row>
             </div>
-            <div class="sort-list" v-if="sortList">
+            <div class="sort-list" v-if="sortList" catchtouchmove="noop">
               <ul>
                 <li
                   class="sort-list-li"
@@ -284,7 +284,7 @@
                 >{{Sort.label}}</li>
               </ul>
             </div>
-            <div class="sort-list" v-if="choose">
+            <div class="sort-list" v-if="choose" catchtouchmove="noop">
               <ul>
                 <li
                   class="sort-list-li"
@@ -296,7 +296,9 @@
               </ul>
             </div>
           </div>
-          <div style="height:1200px;width:100%;"></div>
+          <div style="height:1200px;width:100%;">
+            <store-list v-for="storeInfo in storeListInfo" :key="storeInfo.storeNum" :storeInfo="storeInfo"></store-list>
+          </div>
         </div>
       </div>
     </div>
@@ -305,12 +307,52 @@
 
 <script>
 import card from "@/components/card";
+import storeList from "@/components/store-list";
 import { $wuxBackdrop } from "../../../static/lib/index";
 
 export default {
   data() {
     return {
-      opened: false,
+      storeListInfo: [
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },{
+              id: 2,
+              label: "40减20"
+            },{
+              id: 3,
+              label: "60减30"
+            },{
+              id: 4,
+              label: "1元",
+              allowance: true
+            },{
+              id: 5,
+              label: "20减19"
+            },{
+              id: 6,
+              label: "20减19"
+            }
+          ]
+        }
+      ],
       items: [
         {
           type: "radio",
@@ -937,11 +979,13 @@ export default {
   },
 
   components: {
-    card
+    card,
+    storeList
   },
   onLoad() {
     this.$wuxBackdrop = $wuxBackdrop();
   },
+  noop() {},
 
   methods: {
     toChooseSort(item) {
@@ -1234,6 +1278,7 @@ export default {
   position: relative;
   top: 5px;
   margin: 0 -10px;
+  overflow: hidden;
 }
 .sort-list-li {
   background-color: #fff;
