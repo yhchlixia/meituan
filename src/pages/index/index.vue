@@ -296,7 +296,7 @@
               </ul>
             </div>
           </div>
-          <div style="height:1200px;width:100%;">
+          <div style="min-height:540px">
             <store-list v-for="storeInfo in storeListInfo" :key="storeInfo.storeNum" :storeInfo="storeInfo"></store-list>
           </div>
         </div>
@@ -349,6 +349,92 @@ export default {
             },{
               id: 6,
               label: "20减19"
+            },{
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },{
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },{
+              id: 2,
+              label: "40减20"
+            },{
+              id: 3,
+              label: "60减30"
+            },{
+              id: 4,
+              label: "1元",
+              allowance: true
+            },{
+              id: 5,
+              label: "20减19"
+            },{
+              id: 6,
+              label: "20减19"
+            },{
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },{
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },{
+              id: 2,
+              label: "40减20"
+            },{
+              id: 3,
+              label: "60减30"
+            },{
+              id: 4,
+              label: "1元",
+              allowance: true
+            },{
+              id: 5,
+              label: "20减19"
+            },{
+              id: 6,
+              label: "20减19"
+            },{
+              id: 7,
+              label: "支持自取",
+              sale: true
             }
           ]
         }
@@ -984,10 +1070,18 @@ export default {
   },
   onLoad() {
     this.$wuxBackdrop = $wuxBackdrop();
+    this.loadData();
   },
   noop() {},
-
+  created() {
+    this.loadData();
+  },
   methods: {
+    loadData() {
+      this.$api.meituanIndex.toIndex().then(res => {
+        console.log(res);
+      })
+    },
     toChooseSort(item) {
       this.SortFlag = item.label;
       this.toReleaseModel();

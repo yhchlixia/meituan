@@ -37,7 +37,6 @@
     }],
     "position": "bottom"
   },
-  "debug": true,
   "usingComponents": {
     "wux-button": "./static/lib/button/index",
     "wux-icon": "./static/lib/icon/index",

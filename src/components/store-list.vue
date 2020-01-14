@@ -29,11 +29,10 @@
             </div>
             <div class="store-info-discount">
               <div style="flex:1;">
-                <div
-                  class="store-info-discount-span"
-                  v-for="item in discount"
-                  :key="item.id"
-                ><div v-if="item.allowance">津贴</div>{{item.label}}</div>
+                <div class="store-info-discount-span" :class="{'store-info-discount-spanTwo': item.sale}" v-for="item in discount" :key="item.id">
+                  <div v-if="item.allowance">津贴</div>
+                  {{item.label}}
+                </div>
               </div>
               <div class="store-info-discount-sum" @click="toChangeNum">
                 <wux-icon v-if="showEasy" type="md-arrow-dropdown" size="14"></wux-icon>
@@ -60,23 +59,22 @@ export default {
     };
   },
   created() {
-      this.loadData();
+    this.loadData();
   },
   methods: {
-      loadData() {
-          this.discounts = this.storeInfo.discounts;
-          console.log(this.discounts);
-          if (this.showEasy) {
-              this.discount = this.discounts.slice(0,4);
-          } else {
-              this.discount = this.storeInfo.discounts;
-          }
-      },
-      toChangeNum() {
-          this.showEasy = this.showSum;
-          this.showSum = !this.showSum;
-          this.loadData();
+    loadData() {
+      this.discounts = this.storeInfo.discounts;
+      if (this.showEasy) {
+        this.discount = this.discounts.slice(0, 4);
+      } else {
+        this.discount = this.storeInfo.discounts;
       }
+    },
+    toChangeNum() {
+      this.showEasy = this.showSum;
+      this.showSum = !this.showSum;
+      this.loadData();
+    }
   }
 };
 </script>
@@ -133,10 +131,18 @@ export default {
   height: 20px;
   text-align: center;
 }
-.store-info-discount-span>div {
-    background-color: rgb(245, 174, 174);
-    height: 100%;
-    display: inline-block;
-    padding: 0 3px 0 3px;
+.store-info-discount-span > div {
+  background-color: rgb(245, 174, 174);
+  height: 100%;
+  display: inline-block;
+  padding: 0 3px 0 3px;
+}
+.store-info-discount-spanTwo {
+  display: inline-block;
+  border: 1px solid rgb(12, 215, 241);
+  padding-right: 3px;
+  font-size: 12px;
+  color: rgb(12, 215, 241);
+  margin: 5px 5px 0 0;
 }
 </style>
