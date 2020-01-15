@@ -36,7 +36,7 @@
       <span>{{user.address}}</span>
       <wux-icon type="md-arrow-dropright" color="#ccc" size="15" class="to-choose-address"></wux-icon>
     </div>
-    <div class="index-search sticky">
+    <div class="index-search sticky" catchtouchmove="noop">
       <wux-search-bar
         @click="toSearch"
         clear
@@ -241,7 +241,7 @@
       <div class="index-context-list">
         <div class="index-context-list-label">商家附近</div>
         <div class="index-context-list-filterbar">
-          <div class="index-context-list-filterbar-menu sticky">
+          <div class="index-context-list-filterbar-menu sticky" catchtouchmove="noop">
             <div>
               <wux-row>
                 <wux-col span="3" @click="toChooseList('sort')">
@@ -273,7 +273,7 @@
                 </wux-col>
               </wux-row>
             </div>
-            <div class="sort-list" v-if="sortList" catchtouchmove="noop">
+            <div class="sort-list" v-if="sortList">
               <ul>
                 <li
                   class="sort-list-li"
@@ -284,20 +284,52 @@
                 >{{Sort.label}}</li>
               </ul>
             </div>
-            <div class="sort-list" v-if="choose" catchtouchmove="noop">
-              <ul>
-                <li
-                  class="sort-list-li"
-                  v-for="Sort in sortListArray"
-                  :key="Sort.id"
-                  @click="toChooseSort(Sort)"
-                  :class="{'orange' : SortFlag === Sort.label}"
-                >{{Sort.label}}</li>
-              </ul>
+            <div class="filter-sum" v-if="choose">
+              <div class="filter-sum-list">
+                <div class="filter-sum-overflow">
+                  <scroll-view
+                    scroll-y="true"
+                    style="height:100%;width: calc(100% - 20px);white-space: nowrap;"
+                  >
+                    <view class="div">
+                      <p>商家特色（可多选）</p>
+                      <wux-row gutter="10">
+                        <wux-col span="4" v-for="item in optionsMerchant" :key="item.id" @click="item.checked = !item.checked">
+                          <div class="filter-label" :class="{'option': item.checked}">{{item.label}}</div>
+                        </wux-col>
+                      </wux-row>
+                    </view>
+                    <view class="div">
+                      <p>人均价</p>
+                      <wux-row gutter="10">
+                        <wux-col span="4" @click="chooseAmount(item.id)" v-for="item in optionsAmount" :key="item.id">
+                          <div class="filter-label" :class="{'option': item.id === optionAmount}">{{item.label}}</div>
+                        </wux-col>
+                      </wux-row>
+                    </view>
+                    <view class="div">
+                      <p>优惠活动（可多选）</p>
+                      <wux-row gutter="10">
+                        <wux-col span="4" v-for="item in optionsDiscount" :key="item.id" @click="item.checked = !item.checked">
+                          <div class="filter-label" :class="{'option': item.checked}">{{item.label}}</div>
+                        </wux-col>
+                      </wux-row>
+                    </view>
+                  </scroll-view>
+                </div>
+              </div>
+              <div class="filter-sum-bottom">
+                <button @click="toClear">清空</button>
+                <button @click="toSearchFilter">完成</button>
+              </div>
             </div>
           </div>
           <div style="min-height:540px">
-            <store-list v-for="storeInfo in storeListInfo" :key="storeInfo.storeNum" :storeInfo="storeInfo"></store-list>
+            <store-list
+              v-for="storeInfo in storeListInfo"
+              :key="storeInfo.storeNum"
+              :storeInfo="storeInfo"
+            ></store-list>
           </div>
         </div>
       </div>
@@ -313,6 +345,134 @@ import { $wuxBackdrop } from "../../../static/lib/index";
 export default {
   data() {
     return {
+      optionsMerchant: [
+        {
+          id: 1,
+          label: "津贴联盟",
+          checked: false
+        },
+        {
+          id: 2,
+          label: "美团专送",
+          imgUrl: "/static/user.png",
+          checked: false
+        },
+        {
+          id: 3,
+          label: "到店自取",
+          imgUrl: "/static/user.png",
+          checked: false
+        },
+        {
+          id: 4,
+          label: "赠准时宝",
+          imgUrl: "/static/user.png",
+          checked: false
+        },
+        {
+          id: 5,
+          label: "放心吃",
+          imgUrl: "/static/user.png",
+          checked: false
+        },
+        {
+          id: 6,
+          label: "点评高分",
+          checked: false
+        },
+        {
+          id: 7,
+          label: "品牌商家",
+          checked: false
+        },
+        {
+          id: 8,
+          label: "免配送费",
+          checked: false
+        },
+        {
+          id: 9,
+          label: "新商家",
+          checked: false
+        },
+        {
+          id: 10,
+          label: "0元起送",
+          checked: false
+        },
+        {
+          id: 11,
+          label: "跨天预定",
+          checked: false
+        }
+      ],
+      optionsAmount: [
+        {
+          id: 1,
+          label: "20元以下"
+        },
+        {
+          id: 2,
+          label: "20-40元"
+        },
+        {
+          id: 3,
+          label: "40元以上"
+        }
+      ],
+      optionAmount: 0,
+      optionsDiscount: [
+        {
+          id: 1,
+          label: "满减优惠",
+          checked: false
+        },
+        {
+          id: 2,
+          label: "进店领券",
+          checked: false
+        },
+        {
+          id: 3,
+          label: "折扣商品",
+          checked: false
+        },
+        {
+          id: 4,
+          label: "门店新客立减",
+          checked: false
+        },
+        {
+          id: 5,
+          label: "新人立减",
+          checked: false
+        },
+        {
+          id: 6,
+          label: "满赠活动",
+          checked: false
+        },
+        {
+          id: 7,
+          label: "蛮烦代金券",
+          checked: false
+        },
+        {
+          id: 8,
+          label: "减配送费",
+          checked: false
+        },
+        {
+          id: 9,
+          label: "买赠活动",
+          checked: false
+        },
+        {
+          id: 10,
+          label: "提前下单优惠",
+          checked: false
+        }
+      ],
       storeListInfo: [
         {
           imgUrl: "/static/images/youpomian.jpg",
@@ -333,29 +493,36 @@ export default {
             {
               id: 1,
               label: "30减19"
-            },{
+            },
+            {
               id: 2,
               label: "40减20"
-            },{
+            },
+            {
               id: 3,
               label: "60减30"
-            },{
+            },
+            {
               id: 4,
               label: "1元",
               allowance: true
-            },{
+            },
+            {
               id: 5,
               label: "20减19"
-            },{
+            },
+            {
               id: 6,
               label: "20减19"
-            },{
+            },
+            {
               id: 7,
               label: "支持自取",
               sale: true
             }
           ]
-        },{
+        },
+        {
           imgUrl: "/static/images/youpomian.jpg",
           storeName: "花少爷凉皮",
           storeNum: "SS101101",
@@ -374,29 +541,36 @@ export default {
             {
               id: 1,
               label: "30减19"
-            },{
+            },
+            {
               id: 2,
               label: "40减20"
-            },{
+            },
+            {
               id: 3,
               label: "60减30"
-            },{
+            },
+            {
               id: 4,
               label: "1元",
               allowance: true
-            },{
+            },
+            {
               id: 5,
               label: "20减19"
-            },{
+            },
+            {
               id: 6,
               label: "20减19"
-            },{
+            },
+            {
               id: 7,
               label: "支持自取",
               sale: true
             }
           ]
-        },{
+        },
+        {
           imgUrl: "/static/images/youpomian.jpg",
           storeName: "花少爷凉皮",
           storeNum: "SS101101",
@@ -415,262 +589,610 @@ export default {
             {
               id: 1,
               label: "30减19"
-            },{
+            },
+            {
               id: 2,
               label: "40减20"
-            },{
+            },
+            {
               id: 3,
               label: "60减30"
-            },{
+            },
+            {
               id: 4,
               label: "1元",
               allowance: true
-            },{
+            },
+            {
               id: 5,
               label: "20减19"
-            },{
+            },
+            {
               id: 6,
               label: "20减19"
-            },{
+            },
+            {
               id: 7,
               label: "支持自取",
               sale: true
             }
           ]
-        }
-      ],
-      items: [
+        },
         {
-          type: "radio",
-          label: "Updated",
-          value: "updated",
-          checked: true,
-          children: [
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
             {
-              label: "Recently updated",
-              value: "desc",
-              checked: true // 默认选中
+              id: 1,
+              label: "30减19"
             },
             {
-              label: "Least recently updated",
-              value: "asc"
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
             }
-          ],
-          groups: ["001"]
+          ]
         },
         {
-          type: "text",
-          label: "Forks",
-          value: "forks",
-          groups: ["002"]
-        },
-        {
-          type: "sort",
-          label: "Stars",
-          value: "stars",
-          groups: ["003"]
-        },
-        {
-          type: "filter",
-          label: "筛选",
-          value: "filter",
-          checked: true,
-          children: [
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
             {
-              type: "radio",
-              label: "Languages（单选）",
-              value: "language",
-              children: [
-                {
-                  label: "JavaScript",
-                  value: "javascript"
-                },
-                {
-                  label: "HTML",
-                  value: "html"
-                },
-                {
-                  label: "CSS",
-                  value: "css"
-                },
-                {
-                  label: "TypeScript",
-                  value: "typescript"
-                }
-              ]
+              id: 1,
+              label: "30减19"
             },
             {
-              type: "checkbox",
-              label: "Query（复选）",
-              value: "query",
-              children: [
-                {
-                  label: "Angular",
-                  value: "angular"
-                },
-                {
-                  label: "Vue",
-                  value: "vue"
-                },
-                {
-                  label: "React",
-                  value: "react",
-                  checked: true // 默认选中
-                },
-                {
-                  label: "Avalon",
-                  value: "avalon"
-                }
-              ]
+              id: 2,
+              label: "40减20"
             },
             {
-              type: "checkbox",
-              label: "配送方式",
-              value: "away",
-              children: [
-                {
-                  label: "京东配送",
-                  value: "1"
-                },
-                {
-                  label: "货到付款",
-                  value: "2"
-                },
-                {
-                  label: "仅看有货",
-                  value: "3"
-                },
-                {
-                  label: "促销",
-                  value: "4"
-                },
-                {
-                  label: "全球购",
-                  value: "5"
-                },
-                {
-                  label: "PLUS专享价",
-                  value: "6"
-                },
-                {
-                  label: "新品",
-                  value: "7"
-                },
-                {
-                  label: "配送全球",
-                  value: "8"
-                }
-              ]
+              id: 3,
+              label: "60减30"
             },
             {
-              type: "radio",
-              label: "性别",
-              value: "gander",
-              children: [
-                {
-                  label: "男",
-                  value: "0"
-                },
-                {
-                  label: "女",
-                  value: "1"
-                },
-                {
-                  label: "通用",
-                  value: "2"
-                }
-              ]
+              id: 4,
+              label: "1元",
+              allowance: true
             },
             {
-              type: "checkbox",
-              label: "闭合方式",
-              value: "closed_mode",
-              children: [
-                {
-                  label: "卡扣",
-                  value: "0"
-                },
-                {
-                  label: "拉链",
-                  value: "1"
-                },
-                {
-                  label: "其他",
-                  value: "2"
-                }
-              ]
+              id: 5,
+              label: "20减19"
             },
             {
-              type: "checkbox",
-              label: "轮子种类",
-              value: "wheel_type",
-              children: [
-                {
-                  label: "万向轮",
-                  value: "0"
-                },
-                {
-                  label: "单向轮",
-                  value: "1"
-                },
-                {
-                  label: "飞机轮",
-                  value: "2"
-                },
-                {
-                  label: "其他",
-                  value: "3"
-                }
-              ]
+              id: 6,
+              label: "20减19"
             },
             {
-              type: "checkbox",
-              label: "箱包硬度",
-              value: "wheel_type",
-              children: [
-                {
-                  label: "硬箱",
-                  value: "0"
-                },
-                {
-                  label: "软硬结合",
-                  value: "1"
-                },
-                {
-                  label: "软箱",
-                  value: "2"
-                },
-                {
-                  label: "其他",
-                  value: "3"
-                }
-              ]
-            },
-            {
-              type: "checkbox",
-              label: "适用场景",
-              value: "wheel_type",
-              children: [
-                {
-                  label: "旅行",
-                  value: "0"
-                },
-                {
-                  label: "婚庆",
-                  value: "1"
-                },
-                {
-                  label: "出差",
-                  value: "2"
-                },
-                {
-                  label: "其他",
-                  value: "3"
-                }
-              ]
+              id: 7,
+              label: "支持自取",
+              sale: true
             }
-          ],
-          groups: ["001", "002", "003"]
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
+        },
+        {
+          imgUrl: "/static/images/youpomian.jpg",
+          storeName: "花少爷凉皮",
+          storeNum: "SS101101",
+          starNum: 4.6,
+          monthNum: 1500,
+          deliveryTime: "35",
+          distance: "4.3km",
+          amount: {
+            initAmount: 20,
+            deliveryFee: 4,
+            perCapitaAmount: 16
+          },
+          pick: true,
+          storeType: "中式简餐",
+          discounts: [
+            {
+              id: 1,
+              label: "30减19"
+            },
+            {
+              id: 2,
+              label: "40减20"
+            },
+            {
+              id: 3,
+              label: "60减30"
+            },
+            {
+              id: 4,
+              label: "1元",
+              allowance: true
+            },
+            {
+              id: 5,
+              label: "20减19"
+            },
+            {
+              id: 6,
+              label: "20减19"
+            },
+            {
+              id: 7,
+              label: "支持自取",
+              sale: true
+            }
+          ]
         }
       ],
       SortFlag: "综合排序",
@@ -1060,7 +1582,8 @@ export default {
         }
       ],
       sortList: false,
-      choose: false
+      choose: false,
+      condition: {}
     };
   },
 
@@ -1073,14 +1596,44 @@ export default {
     this.loadData();
   },
   noop() {},
-  created() {
-    this.loadData();
-  },
   methods: {
     loadData() {
       this.$api.meituanIndex.toIndex().then(res => {
         console.log(res);
+      });
+    },
+    chooseAmount(optionAmount) {
+      this.optionAmount = optionAmount;
+    },
+    toSearchFilter() {
+      this.condition.Merchant = [];
+      this.condition.Discount = [];
+      this.optionsMerchant.forEach(element => {
+        if(element.checked === true) {
+          this.condition.Merchant.push(element);
+        }
+      });
+      this.condition.Amount = this.optionAmount;
+      this.optionsDiscount.forEach(element => {
+        if(element.checked === true) {
+          this.condition.Discount.push(element);
+        }
       })
+      console.log(this.condition);
+      this.toReleaseModel();
+    },
+    toClear() {
+      this.optionsMerchant.forEach(element => {
+        if (element.checked) {
+          element.checked = false;
+        }
+      })
+      this.optionsDiscount.forEach(element => {
+        if (element.checked) {
+          element.checked = false;
+        }
+      })
+      this.optionAmount = 0;
     },
     toChooseSort(item) {
       this.SortFlag = item.label;
@@ -1183,7 +1736,7 @@ export default {
 }
 .sticky {
   position: sticky;
-  z-index: 999;
+  z-index: 888;
   background-color: #fff;
   margin: 0 -10px;
   padding: 0 10px;
@@ -1374,6 +1927,55 @@ export default {
   margin: 0 -10px;
   overflow: hidden;
 }
+.filter-sum {
+  z-index: 999;
+  height: 450px;
+  width: calc(100% + 20px);
+  background-color: #fff;
+  position: fixed;
+  top: 85px;
+  left: 0px;
+  overflow: scroll;
+}
+.filter-sum-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  border-top: 1px #eee solid;
+}
+.filter-sum-bottom > button {
+  height: 100%;
+  width: 50%;
+  line-height: 50px;
+  font-size: 16px;
+  border: none;
+  display: inline-block;
+  border-radius: 0px;
+}
+.filter-sum-bottom > button:after {
+  border: none;
+}
+.filter-sum-bottom > button:nth-child(2) {
+  background-color: rgb(235, 193, 10);
+}
+.filter-sum-list {
+  height: 400px;
+  width: 100%;
+}
+.filter-sum-overflow {
+  height: 100%;
+  overflow-y: scroll;
+  background-color: #fff;
+  z-index: 1200;
+}
+.div {
+  margin: 10px;
+  width: calc(100% - 20px);
+}
+.div > p {
+  font-size: 14px;
+}
 .sort-list-li {
   background-color: #fff;
   font-size: 14px;
@@ -1384,5 +1986,17 @@ export default {
 }
 .orange {
   color: orange;
+}
+.filter-label {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(245, 245, 245);
+  text-align: center;
+  font-size: 12px;
+  margin: 5px 0;
+}
+.option {
+  color: rgb(245, 116, 11);
+  background-color: rgb(248, 234, 204);
 }
 </style>
