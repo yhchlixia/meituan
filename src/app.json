@@ -1,7 +1,7 @@
 {
   "pages": [
+    "pages/order/main",
     "pages/index/main",
-    "pages/logs/main",
     "pages/counter/main",
     "pages/user/main",
     "pages/search/main"
@@ -26,7 +26,7 @@
       "selectedIconPath": "static/tabs/home-active.png"
     }, {
       "text": "订单",
-      "pagePath": "pages/logs/main",
+      "pagePath": "pages/order/main",
       "iconPath": "static/tabs/orders.png",
       "selectedIconPath": "static/tabs/orders-active.png"
     }, {
@@ -53,6 +53,10 @@
     "wux-filterbar": "./static/lib/filterbar/index",
     "wux-backdrop": "./static/lib/backdrop/index",
     "wux-cell-group": "./static/lib/cell-group/index",
-    "wux-cell": "./static/lib/cell/index"
+    "wux-cell": "./static/lib/cell/index",
+    "wux-tabs": "./static/lib/tabs/index",
+    "wux-tab": "./static/lib/tab/index",
+    "wux-badge": "./static/lib/badge/index",
+    "wux-spin": "./static/lib/spin/index"
   }
 }

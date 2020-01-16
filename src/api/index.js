@@ -1,7 +1,9 @@
 import * as meituanIndex from "./meituan-index";
+import * as order from "./order";
 
 const apiObj = {
-  meituanIndex
+  meituanIndex,
+  order
 };
 
 const install = function(Vue) {
