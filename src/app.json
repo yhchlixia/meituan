@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/user/main",
     "pages/order/main",
     "pages/index/main",
     "pages/counter/main",
-    "pages/user/main",
     "pages/search/main"
   ],
   "window": {
@@ -57,6 +57,7 @@
     "wux-tabs": "./static/lib/tabs/index",
     "wux-tab": "./static/lib/tab/index",
     "wux-badge": "./static/lib/badge/index",
-    "wux-spin": "./static/lib/spin/index"
+    "wux-spin": "./static/lib/spin/index",
+    "wux-avatar": "./static/lib/avatar/index"
   }
 }

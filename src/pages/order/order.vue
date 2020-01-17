@@ -15,9 +15,14 @@
           </div>
           <div class="content-label-label">
             <div class="content-label-label-label">
-              <p>{{order.storeName}}</p>
-              <img src="/static/images/next.png" />
-              <div class="content-label-label-label-status">{{order.orderStatus}}</div>
+              <div style="width:182px;">
+                <p>{{order.storeName}}</p>
+                <img src="/static/images/next.png" />
+              </div>
+              <div
+                class="content-label-label-label-status"
+                :class="{'refund-label' : order.orderStatus === 'Refund'}"
+              >{{order.orderStatus}}</div>
             </div>
           </div>
         </div>
@@ -46,10 +51,17 @@
     <div class="order-loading" v-if="false">
       <wux-spin wux-class="spin" />
     </div>
-    <div v-if="true" class="bottom">
+    <div v-if="all && !bottom" class="time-limit">
       <wux-divider>
         <view class="loadmore">
           <text class="text">最多显示一年的交易订单</text>
+        </view>
+      </wux-divider>
+    </div>
+    <div v-if="bottom" class="bottom">
+      <wux-divider>
+        <view class="loadmore">
+          <text class="text">已经到底啦</text>
         </view>
       </wux-divider>
     </div>
@@ -74,7 +86,27 @@ export default {
           title: "退款"
         }
       ],
-      orderList: []
+      orderStatus: [
+        {
+          key: "Success",
+          value: "订单已完成"
+        },
+        {
+          key: "Refund",
+          value: "退款成功"
+        },
+        {
+          key: "Cancel",
+          value: "订单已取消"
+        },
+        {
+          key: "Delivery",
+          value: "配送中"
+        }
+      ],
+      orderList: [],
+      all: false,
+      bottom: false
     };
   },
   onLoad() {
@@ -82,11 +114,17 @@ export default {
   },
   methods: {
     loadData(index, limit, key = "allOrder") {
-        this.$api.order.searchOrder(index, limit, key).then(res => {
-          this.all = res.length < 10;
-          this.orderList = this.orderList.concat(res);
-          console.log(this.orderList);
+      this.$api.order.searchOrder(index, limit, key).then(res => {
+        this.all = res.length < 5;
+        this.orderList = this.orderList.concat(res);
+        this.orderList.forEach(element => {
+          if (element.orderStatus === "Success") {
+            element.orderStatus = this.orderStatus[0].value;
+          }
         });
+        console.log(this.orderStatus);
+        this.bottom = this.orderList.length > 0 && this.orderList.length < 3;
+      });
     },
     tabsChange(e) {
       this.current = e.mp.detail.key;
@@ -95,12 +133,17 @@ export default {
     }
   },
   onReachBottom() {
-    let index = this.orderList.length - 1;
+    let index = this.orderList.length;
     this.loadData(index, 10, this.current);
   }
 };
 </script>
 <style scoped>
+#order {
+  width: 100%;
+  min-height: 100%;
+  background-color: #fff;
+}
 .title {
   width: 100%;
   position: sticky;
@@ -111,7 +154,6 @@ export default {
   height: 40px;
   width: 100%;
   padding: 10px;
-  background-color: #fff;
 }
 .content-label-img {
   width: 50px;
@@ -133,8 +175,11 @@ export default {
   width: 100%;
   border-bottom: 1px solid #ccc;
 }
-.content-label-label-label > p {
-  width: 170px;
+.content-label-label-label > div {
+  display: inline-block;
+}
+.content-label-label-label > div > p {
+  max-width: 170px;
   height: 100%;
   line-height: 40px;
   white-space: nowrap;
@@ -142,7 +187,7 @@ export default {
   overflow: hidden;
   display: inline-block;
 }
-.content-label-label-label > img {
+.content-label-label-label > div > img {
   width: 12px;
   height: 12px;
   position: relative;
@@ -160,7 +205,6 @@ export default {
 .content-com {
   width: calc(100% - 20px);
   padding: 0 10px 10px 10px;
-  background-color: #fff;
   min-height: 50px;
 }
 .content-com-content {
@@ -186,7 +230,6 @@ export default {
   width: calc(100% - 20px);
   text-align: right;
   border-bottom: 1px solid #ccc;
-  background-color: #fff;
 }
 .content-button > button {
   width: 80px;
@@ -194,25 +237,29 @@ export default {
   font-size: 12px;
   display: inline-block;
   border-radius: 0;
+  background-color: #fff;
 }
 .content-button > button::after {
   border-radius: 0;
 }
-.content-button-comment {
+#order .content-button-comment {
   background-color: rgb(252, 200, 57);
 }
 .order-loading {
   width: 100%;
   text-align: center;
   padding: 10px 0;
-  background-color: #fff;
 }
-.bottom {
-  background-color: #fff;
+.time-limit {
   padding: 10px 0;
 }
 .loadmore {
   font-size: 12px;
-  background-color: #fff;
+}
+.bottom {
+  padding: 10px 50px;
+}
+#order .refund-label {
+  color: rgb(252, 200, 57);
 }
 </style>

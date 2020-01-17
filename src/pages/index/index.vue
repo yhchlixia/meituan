@@ -268,7 +268,8 @@
                 <wux-col span="3" @click="toChooseList('choose')">
                   <div style="text-align:right">
                     <span>筛选</span>
-                    <wux-icon type="md-wine" size="14px"></wux-icon>
+                    <wux-icon type="md-wine" size="14px" v-if="!filterNum || choose"></wux-icon>
+                    <div class="button-number" v-if="filterNum && !choose">{{filterNum}}</div>
                   </div>
                 </wux-col>
               </wux-row>
@@ -294,7 +295,12 @@
                     <view class="div">
                       <p>商家特色（可多选）</p>
                       <wux-row gutter="10">
-                        <wux-col span="4" v-for="item in optionsMerchant" :key="item.id" @click="item.checked = !item.checked">
+                        <wux-col
+                          span="4"
+                          v-for="item in optionsMerchant"
+                          :key="item.id"
+                          @click="item.checked = !item.checked"
+                        >
                           <div class="filter-label" :class="{'option': item.checked}">{{item.label}}</div>
                         </wux-col>
                       </wux-row>
@@ -302,15 +308,28 @@
                     <view class="div">
                       <p>人均价</p>
                       <wux-row gutter="10">
-                        <wux-col span="4" @click="chooseAmount(item.id)" v-for="item in optionsAmount" :key="item.id">
-                          <div class="filter-label" :class="{'option': item.id === optionAmount}">{{item.label}}</div>
+                        <wux-col
+                          span="4"
+                          @click="chooseAmount(item.id)"
+                          v-for="item in optionsAmount"
+                          :key="item.id"
+                        >
+                          <div
+                            class="filter-label"
+                            :class="{'option': item.id === optionAmount}"
+                          >{{item.label}}</div>
                         </wux-col>
                       </wux-row>
                     </view>
                     <view class="div">
                       <p>优惠活动（可多选）</p>
                       <wux-row gutter="10">
-                        <wux-col span="4" v-for="item in optionsDiscount" :key="item.id" @click="item.checked = !item.checked">
+                        <wux-col
+                          span="4"
+                          v-for="item in optionsDiscount"
+                          :key="item.id"
+                          @click="item.checked = !item.checked"
+                        >
                           <div class="filter-label" :class="{'option': item.checked}">{{item.label}}</div>
                         </wux-col>
                       </wux-row>
@@ -320,7 +339,10 @@
               </div>
               <div class="filter-sum-bottom">
                 <button @click="toClear">清空</button>
-                <button @click="toSearchFilter">完成</button>
+                <button @click="toSearchFilter">
+                  完成
+                  <div class="button-number" v-if="filterNum">{{filterNum}}</div>
+                </button>
               </div>
             </div>
           </div>
@@ -1595,6 +1617,25 @@ export default {
     this.$wuxBackdrop = $wuxBackdrop();
     this.loadData();
   },
+  computed: {
+    filterNum() {
+      var num = 0;
+      this.optionsMerchant.forEach(ele => {
+        if (ele.checked === true) {
+          num++;
+        }
+      });
+      this.optionsDiscount.forEach(ele => {
+        if (ele.checked === true) {
+          num++;
+        }
+      });
+      if (this.optionAmount !== 0) {
+        num++;
+      }
+      return num;
+    }
+  },
   noop() {},
   methods: {
     loadData() {
@@ -1609,16 +1650,16 @@ export default {
       this.condition.Merchant = [];
       this.condition.Discount = [];
       this.optionsMerchant.forEach(element => {
-        if(element.checked === true) {
+        if (element.checked === true) {
           this.condition.Merchant.push(element);
         }
       });
       this.condition.Amount = this.optionAmount;
       this.optionsDiscount.forEach(element => {
-        if(element.checked === true) {
+        if (element.checked === true) {
           this.condition.Discount.push(element);
         }
-      })
+      });
       console.log(this.condition);
       this.toReleaseModel();
     },
@@ -1627,12 +1668,12 @@ export default {
         if (element.checked) {
           element.checked = false;
         }
-      })
+      });
       this.optionsDiscount.forEach(element => {
         if (element.checked) {
           element.checked = false;
         }
-      })
+      });
       this.optionAmount = 0;
     },
     toChooseSort(item) {
@@ -1998,5 +2039,17 @@ export default {
 .option {
   color: rgb(245, 116, 11);
   background-color: rgb(248, 234, 204);
+}
+.button-number {
+  height: 14px;
+  min-width: 14px;
+  border-radius: 50%;
+  background-color: #000;
+  display: inline-block;
+  color: #fff;
+  font-size: 10px;
+  line-height: 14px;
+  margin-left: 5px;
+  text-align: center;
 }
 </style>
