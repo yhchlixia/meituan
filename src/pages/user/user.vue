@@ -44,9 +44,13 @@
     </div>
     <div class="user-list">
       <wux-cell-group>
-        <wux-cell thumb="http://cdn.skyvow.cn/logo.png" is-link title="标题文字"></wux-cell>
-        <wux-cell thumb="http://cdn.skyvow.cn/logo.png" is-link title="标题文字"></wux-cell>
+        <wux-cell v-for="item in items" :key="item.id" :thumb="item.thumb" is-link :extra="item.extra" :url="item.url">
+          {{item.title}}<span v-if="item.text" class="user-list-text">{{item.text || ''}}</span><span :class="{'user-liat-number-text' : item.text}" class="user-list-number">{{item.number || ''}}</span><span class="user-list-company">{{item.company || ''}}</span>
+        </wux-cell>
       </wux-cell-group>
+    </div>
+    <div class="user-footer">
+      <button class="user-footer-button">退出登录</button>
     </div>
   </div>
 </template>
@@ -57,7 +61,65 @@ export default {
     return {
       msg: "user",
       userInfo: {},
-      showLabel: true
+      showLabel: true,
+      items: [{
+        id: 1,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        number: 4,
+        company: '张',
+        title: '美团红包'
+      },{
+        id: 2,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        number: 3,
+        company: '张',
+        title: '商家代金券'
+      },{
+        id: 3,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        text: '津贴余额',
+        number: '20',
+        company: '元',
+        title: '津贴'
+      },{
+        id: 4,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '我的地址',
+        url: '/pages/user-list/address/main'
+      },{
+        id: 5,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '我的关注'
+      },{
+        id: 6,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '我的评价'
+      },{
+        id: 7,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '邀请有奖'
+      },{
+        id: 8,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '客服中心'
+      },{
+        id: 9,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '帮助和反馈'
+      },{
+        id: 10,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '协议和说明'
+      },{
+        id: 11,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        extra: '177****8039',
+        title: '修改手机号'
+      },{
+        id: 12,
+        thumb: 'http://cdn.skyvow.cn/logo.png',
+        title: '餐饮加盟'
+      }]
     };
   },
   onLoad() {
@@ -95,6 +157,7 @@ export default {
   padding: 10px;
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 .user-top-info {
   display: flex;
@@ -180,5 +243,32 @@ export default {
 }
 .user-label-button > button:after {
   border-radius: 0;
+}
+.user-footer > button.user-footer-button {
+  width: 100%;
+  text-align: center;
+  margin: 10px 0 50px 0;
+  background-color: #fff;
+  border: none;
+  border-radius: 0;
+}
+.user-footer > button.user-footer-button::after {
+  border-radius: 0;
+  border: none;
+}
+.user-list-number {
+  color: red;
+  font-size: 20px;
+  margin: 0 10px;
+}
+.user-list-text {
+  font-size: 14px;
+  margin-left: 10px;
+}
+.user-liat-number-text.user-list-number {
+  font-size: 18px;
+}
+.user-list-company {
+  font-size: 14px;
 }
 </style>
