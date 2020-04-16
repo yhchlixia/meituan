@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/index/main",
     "pages/user-list/address/main",
     "pages/user/main",
     "pages/order/main",
-    "pages/index/main",
     "pages/counter/main",
     "pages/search/main",
     "pages/user-list/address/address-edit/main",

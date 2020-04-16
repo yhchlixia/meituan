@@ -50,7 +50,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 2,
@@ -59,7 +60,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 3,
@@ -68,7 +70,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 4,
@@ -77,7 +80,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 5,
@@ -86,7 +90,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 6,
@@ -95,7 +100,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 7,
@@ -104,7 +110,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'school'
+          userLabel: 'school',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 8,
@@ -113,7 +120,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'company'
+          userLabel: 'company',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 9,
@@ -122,7 +130,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
           id: 10,
@@ -131,7 +140,8 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home'
+          userLabel: 'home',
+          addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         }
       ]
     };
