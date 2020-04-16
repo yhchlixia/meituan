@@ -1,20 +1,21 @@
 <template>
   <div id="address-edit">
     <form>
-      <div class="address-edit-li">
+      <div class="address-edit-li" :class="{'address-DN' : userBases.addressDN}">
         <label class="address-edit-li-label">收货地址：</label>
-        <div class="address-edit-li-input" @click="toChooseAddress">
-          <wux-icon class="address-edit-li-icon" type="md-pin" size="14px" color="#ccc"></wux-icon>
-          <input
+        <div class="address-edit-li-input" @click="toChooseAddress(userBases)">
+          <wux-icon
+            v-if="!userBases.addressDN"
+            class="address-edit-li-icon"
+            type="md-pin"
+            size="14px"
+            color="#ccc"
+          ></wux-icon>
+          <p
             class="addressName"
-            placeholder="点击选择收货地址"
-            placeholder-style="font-size: 14px;"
-            id="addressName"
-            name="addressName"
-            type="text"
-            v-model="userBases.addressName"
-            disabled
-          />
+            :class="{'address-DN-input' : userBases.addressDN}"
+          >{{userBases.addressName || '请输入收货地址'}}</p>
+          <p v-if="userBases.addressDN" class="addressDN">{{userBases.addressDN}}</p>
           <wux-icon
             class="address-edit-li-icon on"
             type="md-arrow-forward"
@@ -39,10 +40,22 @@
       </div>
       <div class="address-edit-li">
         <label class="address-edit-li-label">标签：</label>
-        <div class="address-edit-li-input" @click="toChooseAddress">
-          <button class="laber-button" @click="chooseLabel('home')" :class="{'choose-success' : userBases.userLabel === 'home'}">家</button>
-          <button class="laber-button" @click="chooseLabel('company')" :class="{'choose-success' : userBases.userLabel === 'company'}">公司</button>
-          <button class="laber-button" @click="chooseLabel('school')" :class="{'choose-success' : userBases.userLabel === 'school'}">学校</button>
+        <div class="address-edit-li-input">
+          <button
+            class="laber-button"
+            @click="chooseLabel('home')"
+            :class="{'choose-success' : userBases.userLabel === 'home'}"
+          >家</button>
+          <button
+            class="laber-button"
+            @click="chooseLabel('company')"
+            :class="{'choose-success' : userBases.userLabel === 'company'}"
+          >公司</button>
+          <button
+            class="laber-button"
+            @click="chooseLabel('school')"
+            :class="{'choose-success' : userBases.userLabel === 'school'}"
+          >学校</button>
         </div>
       </div>
       <div class="address-edit-li">
@@ -59,13 +72,19 @@
           />
           <div class="address-sex">
             <div class="address-sex-two" @click="chooseSex('先生')">
-              <div class="address-sex-two-radio" :class="{'address-sex-two-radio-out' : userBases.sex === '先生'}">
+              <div
+                class="address-sex-two-radio"
+                :class="{'address-sex-two-radio-out' : userBases.sex === '先生'}"
+              >
                 <div class="address-sex-two-radio-in" v-if="userBases.sex === '先生'"></div>
               </div>
               <span>先生</span>
             </div>
             <div class="address-sex-two" @click="chooseSex('女士')">
-              <div class="address-sex-two-radio" :class="{'address-sex-two-radio-out' : userBases.sex === '女士'}">
+              <div
+                class="address-sex-two-radio"
+                :class="{'address-sex-two-radio-out' : userBases.sex === '女士'}"
+              >
                 <div class="address-sex-two-radio-in" v-if="userBases.sex === '女士'"></div>
               </div>
               <span>女士</span>
@@ -75,7 +94,7 @@
       </div>
       <div class="address-edit-li">
         <label class="address-edit-li-label">手机号：</label>
-        <div class="address-edit-li-input" @click="toChooseAddress">
+        <div class="address-edit-li-input">
           <input
             class="addressName padding"
             placeholder="请填写收货人手机号码"
@@ -113,26 +132,34 @@ export default {
       //     console.log(data)
       // })
     },
-    toChooseAddress() {
+    toChooseAddress(item) {
+      var obj = JSON.stringify(item);
+      var _this = this;
       wx.navigateTo({
-        url: "/pages/user-list/address/map/main",
+        url: "/pages/user-list/address/map/main?obj=" + obj,
+        events: {
+          chooseAddress: function(data) {
+            _this.userBases.addressName = data.address.title;
+            _this.userBases.addressDN = data.address.address;
+          }
+        },
         success(res) {
           console.log(res);
         },
         fail(res) {
           console.log(res);
         }
-      })
+      });
     },
     chooseLabel(label) {
       switch (label) {
-        case 'home':
+        case "home":
           this.userBases.userLabel = label;
           break;
-        case 'company':
+        case "company":
           this.userBases.userLabel = label;
           break;
-        case 'school':
+        case "school":
           this.userBases.userLabel = label;
           break;
         default:
@@ -187,6 +214,7 @@ export default {
 }
 .address-edit-li-input {
   flex: 1;
+  max-width: calc(100% - 80px);
   height: 100%;
   font-size: 14px;
   position: relative;
@@ -196,6 +224,13 @@ export default {
   height: 100%;
   width: 100%;
   line-height: 50px;
+  color: #999;
+  font-size: 14px;
+}
+.address-DN-input.addressName {
+  padding-left: 0;
+  height: 50px;
+  color: #000;
 }
 .address-edit-li-icon {
   position: absolute;
@@ -206,6 +241,7 @@ export default {
 }
 .addressName.padding {
   padding: 0;
+  color: #000;
 }
 .laber-button {
   background-color: #fff;
@@ -257,5 +293,16 @@ export default {
 }
 .address-edit-footer > button:nth-child(2) {
   background-color: #eee;
+}
+.addressDN {
+  font-size: 12px;
+  color: #999;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address-DN.address-edit-li {
+  height: 80px;
 }
 </style>
