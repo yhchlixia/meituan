@@ -27,6 +27,7 @@
       :markers="markers"
     ></map>
     <div class="map-address-list">
+      <scroll-view scroll-y="true" class="sceoll-view" @scrolltolower="bindscrolltolower()">
       <div class="map-address-top">
         <div></div>
       </div>
@@ -55,6 +56,7 @@
         <div class="map-loading-middle"></div>
         <div class="map-loading-right"></div>
       </div>
+      </scroll-view>
     </div>
   </div>
 </template>
@@ -127,21 +129,21 @@ export default {
           console.log(res);
         }
       });
+    },
+    bindscrolltolower() {
+      const _this = this;
+      let index = (this.addresses.length) / 10 + 1;
+      qqmapsdk.search({
+        keyword: "公司",
+        page_index: index,
+        success(res) {
+          _this.addresses = _this.addresses.concat(res.data);
+        },
+        fail(res) {
+          console.log(res, 2);
+        }
+      })
     }
-  },
-  onReachBottom() {
-    const _this = this;
-    let index = (this.addresses.length) / 10 + 1;
-    qqmapsdk.search({
-      keyword: "公司",
-      page_index: index,
-      success(res) {
-        _this.addresses = _this.addresses.concat(res.data);
-      },
-      fail(res) {
-        console.log(res, 2);
-      }
-    })
   }
 };
 </script>
@@ -152,6 +154,10 @@ export default {
 }
 .map-lock {
   background-color: #eee;
+}
+.sceoll-view {
+  width: 100%;
+  height: 100%;
 }
 .map-search {
   background-color: #fff;
@@ -201,14 +207,14 @@ export default {
 }
 .map-address-list {
   width: calc(100% - 20px);
-  height: calc(100% - 340px);
+  height: calc(100% - 320px);
   position: fixed;
   bottom: 0px;
   background-color: #fff;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 10px;
-  overflow: scroll;
+  padding-top: 0;
 }
 .map-address-li {
   width: 100%;
@@ -328,10 +334,9 @@ export default {
 }
 .map-address-top {
   position: sticky;
-  top: -10px;
+  top: 0;
   height: 20px;
   width: 100%;
-  margin-top: -10px;
   text-align: center;
   line-height: 20px;
   background-color: #fff;
