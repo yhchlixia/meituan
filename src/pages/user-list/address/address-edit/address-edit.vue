@@ -35,7 +35,17 @@
             name="addressName"
             type="text"
             v-model="userBases.house"
+            @focus="inputValue('house')"
+            @blur="blur()"
           />
+          <wux-icon
+            @click="clear('house')"
+            v-if="showClearHouse"
+            class="input-clear"
+            color="#aaa"
+            type="md-close-circle"
+            size="14px"
+          ></wux-icon>
         </div>
       </div>
       <div class="address-edit-li">
@@ -69,7 +79,17 @@
             name="addressName"
             type="text"
             v-model="userBases.name"
+            @focus="inputValue('name')"
+            @blur="blur()"
           />
+          <wux-icon
+            @click="clear('name')"
+            v-if="showClearName"
+            class="input-clear name"
+            color="#aaa"
+            type="md-close-circle"
+            size="14px"
+          ></wux-icon>
           <div class="address-sex">
             <div class="address-sex-two" @click="chooseSex('先生')">
               <div
@@ -103,7 +123,17 @@
             name="addressName"
             type="text"
             v-model="userBases.tel"
+            @focus="inputValue('tel')"
+            @blur="blur()"
           />
+          <wux-icon
+            @click="clear('tel')"
+            v-if="showClearTel"
+            class="input-clear"
+            color="#aaa"
+            type="md-close-circle"
+            size="14px"
+          ></wux-icon>
         </div>
       </div>
       <div class="address-edit-footer">
@@ -118,7 +148,10 @@ export default {
   data() {
     return {
       msg: "address Edit",
-      userBases: {}
+      userBases: {},
+      showClearHouse: false,
+      showClearName: false,
+      showClearTel: false
     };
   },
   onLoad(option) {
@@ -169,7 +202,82 @@ export default {
     chooseSex(sex) {
       this.userBases.sex = sex;
     },
+    
+    inputValue(item) {
+      switch (item) {
+        case 'house':
+          if (this.userBases.house !== '') {
+            this.showClearHouse = true;
+          }
+          break;
+        case 'name':
+          if (this.userBases.name !== '') {
+            this.showClearName = true;
+          }
+          break;
+        case 'tel':
+          if (this.userBases.tel !== '') {
+            this.showClearTel = true;
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    blur() {
+      this.showClearHouse = false;
+      this.showClearName = false;
+      this.showClearTel = false;
+    },
+    clear(item) {
+      debugger
+      switch (item) {
+        case 'house':
+          this.userBases.house = "";
+          break;
+        case 'name':
+          this.userBases.name = "";
+          break;
+        case 'tel':
+          this.userBases.tel = "";
+          break;
+        default:
+          break;
+      }
+    },
     saveAddress() {
+      if (this.userBases.addressName === "") {
+        wx.showToast({
+          title: "请选择收货地址",
+          icon: "none",
+          duration: 2000
+        });
+        return;
+      }
+      if (this.userBases.house === "") {
+        wx.showToast({
+          title: "请填写详细地址",
+          icon: "none",
+          duration: 2000
+        });
+        return;
+      }
+      if (this.userBases.name === "") {
+        wx.showToast({
+          title: "请填写收货人姓名",
+          icon: "none",
+          duration: 2000
+        });
+        return;
+      }
+      if (this.userBases.tel === "") {
+        wx.showToast({
+          title: "请填写手机号",
+          icon: "none",
+          duration: 2000
+        });
+        return;
+      }
       wx.navigateBack({
         delta: 1,
         success(res) {
@@ -211,6 +319,14 @@ export default {
   width: 80px;
   line-height: 50px;
   font-size: 14px;
+}
+.input-clear {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.input-clear.name {
+  right: 125px;
 }
 .address-edit-li-input {
   flex: 1;
