@@ -31,7 +31,7 @@
     </div>
   </div>-->
   <div id="index">
-    <div class="user-address">
+    <div class="user-address" @click="toPosition(user)">
       <wux-icon type="md-pin" color="#cc9900" size="17" class="user-address-location"></wux-icon>
       <span>{{user.address}}</span>
       <wux-icon type="md-arrow-dropright" color="#ccc" size="15" class="to-choose-address"></wux-icon>
@@ -360,6 +360,11 @@
 </template>
 
 <script>
+var QQMapWX = require('../../../static/map/qqmap-wx-jssdk.js');
+var qqmapsdk;
+qqmapsdk = new QQMapWX({
+    key: 'ZOLBZ-YAFHO-KEHWJ-SPOVW-YZKAF-RIFEM'
+});
 import card from "@/components/card";
 import storeList from "@/components/store-list";
 import { $wuxBackdrop } from "../../../static/lib/index";
@@ -1257,9 +1262,7 @@ export default {
         nickName: "mpvue",
         avatarUrl: "http://mpvue.com/assets/logo.png"
       },
-      user: {
-        address: "中山公园"
-      },
+      user: {},
       placeholder: "请输入你要查询的商品",
       searchValue: "黄萌鸡米饭",
       indexMenuOne: [
@@ -1616,6 +1619,12 @@ export default {
   onLoad() {
     this.$wuxBackdrop = $wuxBackdrop();
     this.loadData();
+    let that = this;
+    qqmapsdk.reverseGeocoder({
+      success(res) {
+        that.user = res.result;
+      }
+    })
   },
   computed: {
     filterNum() {
@@ -1739,6 +1748,21 @@ export default {
           console.log(res);
         }
       });
+    },
+    toPosition(item) {
+      const obj = JSON.stringify(item);
+      var that = this;
+      wx.navigateTo({
+        url: "/pages/index/choose-address/main?obj=" + obj,
+        events: {
+          chooseAddress(res) {
+            console.log(res);
+          }
+        },
+        success(res) {
+          console.log(res);
+        }
+      })
     }
   },
 

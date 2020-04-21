@@ -36,11 +36,12 @@
             type="text"
             v-model="userBases.house"
             @focus="inputValue('house')"
+            @change="inputValue('house')"
             @blur="blur()"
           />
           <wux-icon
             @click="clear('house')"
-            v-if="showClearHouse"
+            v-show="showClearHouse"
             class="input-clear"
             color="#aaa"
             type="md-close-circle"
@@ -84,7 +85,7 @@
           />
           <wux-icon
             @click="clear('name')"
-            v-if="showClearName"
+            v-show="showClearName"
             class="input-clear name"
             color="#aaa"
             type="md-close-circle"
@@ -128,7 +129,7 @@
           />
           <wux-icon
             @click="clear('tel')"
-            v-if="showClearTel"
+            v-show="showClearTel"
             class="input-clear"
             color="#aaa"
             type="md-close-circle"
@@ -230,7 +231,6 @@ export default {
       this.showClearTel = false;
     },
     clear(item) {
-      debugger
       switch (item) {
         case 'house':
           this.userBases.house = "";
@@ -322,8 +322,11 @@ export default {
 }
 .input-clear {
   position: absolute;
-  top: 15px;
+  top: 0;
   right: 15px;
+  height: 50px;
+  line-height: 50px;
+  z-index: 1000;
 }
 .input-clear.name {
   right: 125px;
