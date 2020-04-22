@@ -33,7 +33,7 @@
   <div id="index">
     <div class="user-address" @click="toPosition(user)">
       <wux-icon type="md-pin" color="#cc9900" size="17" class="user-address-location"></wux-icon>
-      <span>{{user.address}}</span>
+      <span>{{user.formatted_addresses.recommend}}</span>
       <wux-icon type="md-arrow-dropright" color="#ccc" size="15" class="to-choose-address"></wux-icon>
     </div>
     <div class="index-search sticky" catchtouchmove="noop">
