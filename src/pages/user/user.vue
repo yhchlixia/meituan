@@ -67,7 +67,8 @@ export default {
         thumb: 'http://cdn.skyvow.cn/logo.png',
         number: 4,
         company: '张',
-        title: '美团红包'
+        title: '美团红包',
+        url: '/pages/user-list/red-envelope/main'
       },{
         id: 2,
         thumb: 'http://cdn.skyvow.cn/logo.png',
@@ -89,11 +90,13 @@ export default {
       },{
         id: 5,
         thumb: 'http://cdn.skyvow.cn/logo.png',
-        title: '我的关注'
+        title: '我的关注',
+        url: '/pages/user-list/attention/main'
       },{
         id: 6,
         thumb: 'http://cdn.skyvow.cn/logo.png',
-        title: '我的评价'
+        title: '我的评价',
+        url: '/pages/user-list/commit/main'
       },{
         id: 7,
         thumb: 'http://cdn.skyvow.cn/logo.png',
