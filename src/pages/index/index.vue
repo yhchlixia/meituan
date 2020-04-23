@@ -1756,7 +1756,7 @@ export default {
         url: "/pages/index/choose-address/main?obj=" + obj,
         events: {
           chooseAddress(res) {
-            console.log(res);
+            that.user.formatted_addresses.recommend = res.address;
           }
         },
         success(res) {

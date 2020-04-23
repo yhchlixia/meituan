@@ -17,52 +17,70 @@
         />
         <img class="icon-search" src="/static/images/search.png" alt />
         <div class="clear">
-          <img v-show="clear" @click="clearInput()" class="icon-clear" src="/static/images/delete.png" alt />
+          <img
+            v-show="clear"
+            @click="clearInput()"
+            class="icon-clear"
+            src="/static/images/delete.png"
+            alt
+          />
         </div>
       </div>
     </div>
-    <div class="choose-address-context">
-        <div class="choose-address-context-location">
-            <p>{{msg.formatted_addresses.recommend}}</p>
-            <div class="re-location">
-                <img src="/static/images/location-choose.png" alt="">
-                <p>重新定位</p>
-            </div>
+    <div v-if="search" class="search-list">
+      <div class="my-address-li" v-for="address in searchAddress" :key="address.id" @click="selectedAddress(address.title)">
+        <p>{{address.title}}</p>
+        <div class="address-distance">{{address.distance }}千米</div>
+        <div class="my-address-li-base">
+          <p>{{address.address}}</p>
         </div>
-        <div class="my-address">
-            <div class="my-address-label">
-                <img src="/static/images/house.png" alt="">
-                <p>我的收货地址</p>
-            </div>
-            <div class="my-address-list" :class="{'allAddress': showAllAddress}">
-                <div class="my-address-li" v-for="address in addresses" :key="address.id">
-                    <p>{{address.addressName}}</p>
-                    <div class="my-address-li-base">
-                        <span>{{address.name}}</span>
-                        <span>{{address.sex}}</span>
-                        <span>{{address.tel}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="my-address">
-            <div class="my-address-label">
-                <img src="/static/images/house.png" alt="">
-                <p>我的收货地址</p>
-            </div>
-            <div class="my-address-list" :class="{'allAddress': showAllAddress}">
-                <div class="my-address-li" v-for="address in addresses" :key="address.id">
-                    <p>{{address.addressName}}</p>
-                    <div class="my-address-li-base">
-                        <span>{{address.name}}</span>
-                        <span>{{address.sex}}</span>
-                        <span>{{address.tel}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <div class="user-address-footer">
+    <div class="choose-address-context" v-if="!search">
+      <div class="choose-address-context-location">
+        <p>{{msg.formatted_addresses.recommend}}</p>
+        <div class="re-location" @click="selectedAddress(msg.formatted_addresses.recommend)">
+          <img src="/static/images/location-choose.png" alt />
+          <p>重新定位</p>
+        </div>
+      </div>
+      <div class="my-address">
+        <div class="my-address-label">
+          <img src="/static/images/house.png" alt />
+          <p>我的收货地址</p>
+        </div>
+        <div class="my-address-list" :class="{'allAddress': showAllAddress}">
+          <div class="my-address-li" v-for="address in addresses" :key="address.id" @click="selectedAddress(address.addressName)">
+            <p>{{address.addressName}}</p>
+            <div class="my-address-li-base">
+              <span>{{address.name}}</span>
+              <span>{{address.sex}}</span>
+              <span>{{address.tel}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="my-address-footer" :class="{'allAddress': showAllAddress}" @click="allAddress">
+          <p>{{showAllAddress? '收起全部地址' : '展开全部地址'}}</p>
+          <img v-if="!showAllAddress" src="/static/images/down.png" alt />
+          <img v-if="showAllAddress" src="/static/images/up.png" alt />
+        </div>
+      </div>
+      <div class="my-address">
+        <div class="my-address-label">
+          <img src="/static/images/house.png" alt />
+          <p>附近收货地址</p>
+        </div>
+        <div class="my-address-list allAddress">
+          <div class="my-address-li" v-for="address in nearbyAddresses" :key="address.id" @click="selectedAddress(address.title)">
+            <p>{{address.title}}</p>
+            <div class="my-address-li-base">
+              <span>{{address.address}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="user-address-footer" v-if="!search">
       <button @click="userAddress()">
         <wux-icon color="orange" size="22px" type="md-add-circle-outline"></wux-icon>新增收货地址
       </button>
@@ -70,6 +88,11 @@
   </div>
 </template>
 <script>
+var QQMapWX = require('../../../../static/map/qqmap-wx-jssdk.js');
+var qqmapsdk;
+qqmapsdk = new QQMapWX({
+    key: 'ZOLBZ-YAFHO-KEHWJ-SPOVW-YZKAF-RIFEM'
+});
 export default {
   data() {
     return {
@@ -93,7 +116,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -103,7 +126,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -113,7 +136,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -123,7 +146,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -133,7 +156,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -143,7 +166,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -153,7 +176,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'school',
+          userLabel: "school",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -163,7 +186,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'company',
+          userLabel: "company",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -173,7 +196,7 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         },
         {
@@ -183,29 +206,78 @@ export default {
           name: "闫宏超",
           tel: "177****8039",
           sex: "先生",
-          userLabel: 'home',
+          userLabel: "home",
           addressDN: "江苏省无锡市新吴区中国传感网国际创新园1"
         }
       ],
-      showAllAddress: false
+      showAllAddress: false,
+      nearbyAddresses: [],
+      search: false,
+      searchAddress: []
     };
   },
   watch: {
-      address: function(val) {
-          if(val !== '') {
-              this.clear = true;
-          } else {
-              this.clear = false;
+    address: function(val) {
+      let that = this;
+      if (val !== "") {
+        this.clear = true;
+        this.search = true;
+        qqmapsdk.getSuggestion({
+          keyword: val,
+          region: this.msg.ad_info.city,
+          policy: 1,
+          page_size: 20,
+          success(res) {
+            res.data.forEach(element => {
+              qqmapsdk.calculateDistance({
+                to: [{
+                  location: element.location
+                }],
+                mode: 'straight',
+                success(res) {
+                  element.distance = (res.result.elements[0].distance / 1000).toFixed(2);
+                }
+              })
+            });
+            that.searchAddress = res.data;
+              console.log(that.searchAddress);
           }
+        })
+      } else {
+        this.clear = false;
+        this.search = false;
       }
+    }
   },
   onLoad(option) {
+    let that = this;
+    that.showAllAddress = false;
     this.msg = JSON.parse(option.obj);
+    qqmapsdk.search({
+      keyword: "公司",
+      success(res) {
+        that.nearbyAddresses = res.data;
+      }
+    })
   },
   methods: {
-      allAddress() {
-          this.showAllAddress = !this.showAllAddress;
-      },
+    allAddress() {
+      this.showAllAddress = !this.showAllAddress;
+    },
+    selectedAddress(address) {
+      let _this = this;
+      const eventChannel = this.$mp.page.getOpenerEventChannel();
+      eventChannel.emit("chooseAddress", { address: address });
+      wx.navigateBack({
+        delta: 1,
+        success(res) {
+          console.log(res);
+        },
+        fail() {
+          console.log(res);
+        }
+      });
+    },
     userAddress(item) {
       var userBase = item ? item : this.userBase;
       var obj = JSON.stringify(userBase);
@@ -242,6 +314,7 @@ export default {
 <style scoped>
 #choose-address {
   width: 100%;
+  height: 100%;
   background-color: #fff;
 }
 .choose-address-search {
@@ -255,18 +328,51 @@ export default {
   z-index: 1000;
   background-color: #fff;
 }
+.search-list {
+  width: calc(100% - 20px);
+  min-height: 100%;
+  background-color: #fff;
+  padding: 10px;
+}
+.search-list > .my-address-li > p {
+  display: inline-block;
+  width: calc(100% - 70px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address-distance {
+  display: inline-block;
+  width: 70px;
+  font-size: 12px;
+  color: #999;
+  position: absolute;
+  text-align: center;
+}
+.search-list > .my-address-li > span {
+  font-size: 12px;
+  color: #999;
+}
 .my-address-li-base {
-    padding: 5px 0;
+  padding: 5px 0;
 }
 .my-address-li-base > span {
-    font-size: 12px;
-    color: #999;
+  font-size: 12px;
+  color: #999;
+}
+.my-address-li-base > p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  font-size: 12px;
+  color: #999;
 }
 .my-address-li-base > span:first-child {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 .my-address-li-base > span:nth-child(2) {
-    margin-right: 25px;
+  margin-right: 25px;
 }
 .choose-address-search-left {
   width: 80px;
@@ -287,100 +393,101 @@ export default {
   height: 10px;
 }
 .choose-address-context {
-    width: 100%;
+  width: 100%;
+  background-color: #fff;
 }
 .choose-address-context-location {
-    width: 100%;
-    width: calc(100% - 20px);
-    background-color: #fff;
-    display: flex;
-    padding: 15px 10px;
-    border-bottom: 1px solid #ddd;
+  width: 100%;
+  width: calc(100% - 20px);
+  background-color: #fff;
+  display: flex;
+  padding: 15px 10px;
+  border-bottom: 1px solid #ddd;
 }
 .choose-address-context-location > p {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 .re-location {
-    color: rgb(238, 174, 36);
-    width: 100px;
-    display: inline-block;
-    text-align: right;
-    font-size: 13px;
-    line-height: 20px;
-    position: relative;
+  color: rgb(238, 174, 36);
+  width: 100px;
+  display: inline-block;
+  text-align: right;
+  font-size: 13px;
+  line-height: 20px;
+  position: relative;
 }
 .re-location > img {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    right: 60px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  right: 60px;
 }
 .re-location > p {
-    display: inline-block;
-    height: 24.8px;
-    line-height: 24.8px;
+  display: inline-block;
+  height: 24.8px;
+  line-height: 24.8px;
 }
 .my-address-label {
-    width: calc(100% - 20px);
-    height: 20px;
-    position: relative;
+  width: calc(100% - 20px);
+  height: 20px;
+  position: relative;
 }
 .my-address {
-    padding: 10px;
-    width: calc(100% - 20px);
+  padding: 10px;
+  width: calc(100% - 20px);
 }
 .my-address-label > img {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    width: 15px;
-    height: 15px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 15px;
+  height: 15px;
 }
 .my-address-label > p {
-    display: inline-block;
-    height: 20px;
-    line-height: 20px;
-    font-size: 14px;
-    margin-left: 25px;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  margin-left: 25px;
 }
 .my-address-list {
-    width: calc(100% - 20px);
-    padding: 10px 25px;
-    height: 200px;
-    overflow: hidden;
+  width: calc(100% - 20px);
+  padding: 10px 25px;
+  height: 200px;
+  overflow: hidden;
 }
 .allAddress.my-address-list {
-    height: auto;
-    overflow: auto;
+  height: auto;
+  overflow: auto;
 }
 .my-address-li {
-    padding: 10px 0;
-    width: 100%;
-    height: 50px;
-    border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #ddd;
 }
 .my-address-footer {
-    width: calc(100% - 15px);
-    padding: 10px 0 10px 35px;
-    border-bottom: 1px solid #ddd;
-    margin: 0 -10px;
+  width: calc(100% - 15px);
+  padding: 0 0 10px 35px;
+  border-bottom: 1px solid #ddd;
+  margin: 0 -10px;
 }
 .my-address-footer > p {
-    font-size: 13px;
-    display: inline-block;
+  font-size: 13px;
+  display: inline-block;
 }
 .my-address-footer > img {
-    width: 12px;
-    height: 12px;
-    margin-left: 2px;
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
 }
 .choose-address-search-left > span {
   font-size: 13px;
@@ -430,12 +537,12 @@ export default {
   z-index: 1002;
 }
 .clear {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
-    margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  margin: auto;
 }
 </style>
